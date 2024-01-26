@@ -3,6 +3,9 @@
 $ uname -a
 Linux raspberrypi 5.10.103+ #1529 Tue Mar 8 12:19:18 GMT 2022 armv6l GNU/Linux
 ```
+```bash
+raspi-config
+```
 
 # 开启wlan0
 ```bash
