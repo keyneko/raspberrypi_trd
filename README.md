@@ -53,8 +53,10 @@ network={
 }
 ```
 
-# 重启系统
+# 重新连接网络
 ```bash
+sudo systemctl restart dhcpcd
+# or
 sudo reboot
 ```
 
