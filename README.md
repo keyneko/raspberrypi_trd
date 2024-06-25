@@ -30,6 +30,7 @@ wpa-conf /boot/wpa.conf
 
 # 配置ssid和psk
 ```bash
+sudo iwlist wlan0 scanning | grep ESSID
 $ sudo nano /boot/wpa.conf
 ```
 ```
