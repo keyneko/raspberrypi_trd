@@ -104,3 +104,47 @@ raspistill -t 2000 -o capture.jpg -w 640 -h 480 -q 10 -n
 # 传图到电脑
 scp capture* zx@192.168.43.19:~/Desktop
 ```
+
+# 安装NodeJs（zero只支持到v11）
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+
+wget https://nodejs.org/dist/v11.9.0/node-v11.9.0-linux-armv6l.tar.xz
+tar -xvJf node-v11.9.0-linux-armv6l.tar.xz
+# sudo mv node-v11.9.0-linux-armv6l /usr/local/nodejs
+# echo 'export PATH=/usr/local/nodejs/bin:$PATH' >> ~/.bashrc
+# source ~/.bashrc
+cd node-v11.9.0-linux-armv6l/
+sudo cp -R * /usr/local/
+
+# or
+# sudo ln -s /usr/local/bin/node /usr/bin/node
+# sudo ln -s /usr/local/bin/npm /usr/bin/npm
+# sudo unlink /usr/bin/node
+# sudo unlink /usr/bin/npm
+
+# sudo npm install -g n
+# export N_NODE_MIRROR=https://unofficial-builds.nodejs.org/download/release
+# sudo n stable
+# sudo n lts
+# sudo n 14.19.1
+# sudo n rm 14.19.1
+# n ls
+
+# 安装nvm
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+npm config get registry
+npm config set registry https://registry.npm.taobao.org
+npm config set strict-ssl false
+
+# nvm换源
+nvm root
+node_mirror: http://npmmirror.com/mirrors/node/ 
+npm_mirror: http://npmmirror.com/mirrors/npm/
+
+npm i create-nuxt-app -g
+npx create-nuxt-app robot-web
+sudo npm remove create-nuxt-app -g
+```
