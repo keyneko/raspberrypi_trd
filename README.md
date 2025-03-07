@@ -210,6 +210,7 @@ WORKDIR /workspace
 CMD ["/bin/bash"]
 
 sudo docker build --network=host -t rpi-cross-compile .
-docker run --network=host -it --rm -v $(pwd):/workspace rpi-cross-compile
+sudo docker run --network=host -it --rm -v $(pwd):/workspace rpi-cross-compile
+sudo docker run --platform linux/arm/v6 --network=host -it --rm -v $(pwd):/workspace rpi-cross-compile
 
 ```
