@@ -148,3 +148,34 @@ npm i create-nuxt-app -g
 npx create-nuxt-app robot-web
 sudo npm remove create-nuxt-app -g
 ```
+
+# 开发micro-ROS
+```bash
+sudo apt update
+sudo apt install python3-pip
+pip3 install platformio
+pip3 install --upgrade platformio
+
+# 如果报错找不到虚拟环境，手动创建
+python3 -m venv ~/.platformio/penv
+source ~/.platformio/penv/bin/activate
+pip install platformio
+pip install catkin_pkg
+pip install empy
+
+pio project init --board raspberrypi_zero --project-dir zero_ROS-test
+
+# platformio.ini添加依赖
+[env:raspberrypi_zero]
+platform = linux_arm
+board = raspberrypi_zero
+framework = wiringpi
+lib_deps = https://github.com/micro-ROS/micro_ros_platformio
+board_microros_distro = humble
+board_microros_transport = wifi
+
+# 安装更新依赖
+pio lib install
+pio run
+
+```
