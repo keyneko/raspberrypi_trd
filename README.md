@@ -179,3 +179,37 @@ pio lib install
 pio run
 
 ```
+
+# 使用Docker环境交叉编译
+```bash
+cat /etc/os-release
+
+sudo docker pull balenalib/rpi-raspbian:bullseye
+
+# Dockerfile
+FROM balenalib/rpi-raspbian:bullseye
+
+# 更新包管理器并安装必要的工具
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    cmake \
+    gcc-arm-linux-gnueabihf \
+    g++-arm-linux-gnueabihf
+
+# 安装其他需要的工具和库
+# RUN apt-get install -y <其他依赖>
+
+# 设置工作目录
+WORKDIR /workspace
+
+# 将项目文件复制到容器中
+# COPY . .
+
+# 默认命令
+CMD ["/bin/bash"]
+
+sudo docker build --network=host -t rpi-cross-compile .
+docker run --network=host -it --rm -v $(pwd):/workspace rpi-cross-compile
+
+```
