@@ -182,6 +182,7 @@ pio run
 
 # 清除缓存
 pio run --target clean
+rm -rf .pio
 rm -rf .pio/libdeps/raspberrypi_zero/micro_ros_platformio
 ```
 
