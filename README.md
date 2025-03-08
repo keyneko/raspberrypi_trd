@@ -161,7 +161,8 @@ python3 -m venv ~/.platformio/penv
 source ~/.platformio/penv/bin/activate
 pip install platformio
 pip install catkin_pkg
-pip install empy
+pip install empy==3.3.4
+pip install lark
 
 pio project init --board raspberrypi_zero --project-dir zero_ROS-test
 
@@ -175,9 +176,13 @@ board_microros_distro = humble
 board_microros_transport = wifi
 
 # 安装更新依赖
-pio lib install
+pio pkg install
+pio pkg list
 pio run
 
+# 清除缓存
+pio run --target clean
+rm -rf .pio/libdeps/raspberrypi_zero/micro_ros_platformio
 ```
 
 # 使用Docker环境交叉编译
