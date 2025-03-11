@@ -291,10 +291,16 @@ sudo apt install v4l-utils
 v4l2-ctl --list-devices
 sudo apt install ffmpeg
 v4l2-ctl -d /dev/video0 --list-formats-ext
-ffmpeg -f v4l2 -input_format mjpeg -i /dev/video0 -vframes 1 output.jpg
+
+# 有读写权限
+ls -l /dev/video0
+sudo chmod 666 /dev/video0
+ffmpeg -f v4l2 -input_format mjpeg -video_size 640x480 -i /dev/video0 -vframes 1 output.jpg
 
 # ROS2 包
 sudo apt install ros-humble-v4l2-camera
-ros2 run v4l2_camera v4l2_camera_node
 
+v4l2-ctl --device=/dev/video0 --set-fmt-video=width=320,height=240,pixelformat=MJPG
+v4l2-ctl --device=/dev/video0 --set-parm=15
+ros2 run v4l2_camera v4l2_camera_node
 ```
