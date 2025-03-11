@@ -243,3 +243,31 @@ sudo netplan apply
 ip a
 
 ```
+
+# initramfs 压缩方式更改为 lz4，提高系统启动速度
+```bash
+sudo apt install lz4
+sudo sed -i -e 's/COMPRESS=zstd/COMPRESS=lz4/' /etc/initramfs-tools/initramfs.conf
+sudo update-initramfs -u
+sudo reboot
+```
+
+# 安装ROS2
+```bash
+locale  # check for UTF-8
+
+# 设置系统源
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+
+# 设置密钥
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+sudo apt update
+sudo apt upgrade
+# 安装无GUI版本
+sudo apt install ros-humble-ros-base
+sudo apt install ros-dev-tools
+```
