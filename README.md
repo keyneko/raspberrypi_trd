@@ -304,3 +304,44 @@ v4l2-ctl --device=/dev/video0 --set-fmt-video=width=320,height=240,pixelformat=M
 v4l2-ctl --device=/dev/video0 --set-parm=15
 ros2 run v4l2_camera v4l2_camera_node
 ```
+
+# python发布客户端
+```python
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import CompressedImage
+from cv_bridge import CvBridge
+import cv2
+
+class CompressedImagePublisher(Node):
+    def __init__(self):
+        super().__init__('compressed_image_publisher')
+        self.publisher_ = self.create_publisher(CompressedImage, 'camera/image/compressed', 10)
+        self.timer = self.create_timer(0.1, self.timer_callback)
+        self.cap = cv2.VideoCapture(0)
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 320)
+        self.cap.set(cv2.CAP_PROP_FPS, 15)
+        self.bridge = CvBridge()
+
+    def timer_callback(self):
+        ret, frame = self.cap.read()
+        if ret:
+            _, buffer = cv2.imencode('.jpg', frame)
+            image_message = CompressedImage()
+            image_message.header.stamp = self.get_clock().now().to_msg()
+            image_message.format = 'jpeg'
+            image_message.data = buffer.tobytes()
+            self.publisher_.publish(image_message)
+
+def main(args=None):
+    rclpy.init(args=args)
+    image_publisher = CompressedImagePublisher()
+    rclpy.spin(image_publisher)
+    image_publisher.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
