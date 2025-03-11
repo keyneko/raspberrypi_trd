@@ -14,7 +14,9 @@ $ sudo ifconfig wlan0 up
 
 # 搜索wifi ssid
 ```bash
-$ sudo iwlist wlan0 scan | grep ESSID
+sudo apt update
+sudo apt install wireless-tools
+sudo iwlist wlan0 scan | grep "ESSID"
 ```
 
 # 配置interfaces文件
@@ -218,5 +220,26 @@ CMD ["/bin/bash"]
 sudo docker build --network=host -t rpi-cross-compile .
 sudo docker run --network=host -it --rm -v $(pwd):/workspace rpi-cross-compile
 sudo docker run --platform linux/arm/v6 --network=host -it --rm -v $(pwd):/workspace rpi-cross-compile
+
+```
+
+
+# zero 2w配置网络
+```bash
+sudo nano /etc/netplan/50-cloud-init.yaml
+network:
+    version: 2
+    renderer: networkd
+    wifis:
+        wlan0:
+            dhcp4: true
+            optional: true
+            access-points:
+                "WiFi_网络_1":
+                    password: "密码1"
+                "WiFi_网络_2":
+                    password: "密码2"
+sudo netplan apply
+ip a
 
 ```
