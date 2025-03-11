@@ -94,6 +94,9 @@ ifconfig eth0
 
 # 抓拍摄像头
 ```bash
+sudo apt install raspi-config
+sudo raspi-config
+
 raspistill -t 2000 -o capture.jpg -w 640 -h 480 -q 10 -n
 # raspistill：调用摄像头拍照的命令。
 # -t 2000：设置拍摄前的延迟时间（以毫秒为单位）。这里是 2000 毫秒（2 秒）。摄像头在拍摄前等待 2 秒，给你时间准备或稳定摄像头。
@@ -280,4 +283,18 @@ ros2 run demo_nodes_cpp talker
 
 source /opt/ros/humble/setup.bash
 ros2 run demo_nodes_py listener
+```
+
+# 启用摄像头
+```bash
+sudo apt install v4l-utils
+v4l2-ctl --list-devices
+sudo apt install ffmpeg
+v4l2-ctl -d /dev/video0 --list-formats-ext
+ffmpeg -f v4l2 -input_format mjpeg -i /dev/video0 -vframes 1 output.jpg
+
+# ROS2 包
+sudo apt install ros-humble-v4l2-camera
+ros2 run v4l2_camera v4l2_camera_node
+
 ```
