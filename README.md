@@ -267,7 +267,17 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 
 sudo apt update
 sudo apt upgrade
+
 # 安装无GUI版本
 sudo apt install ros-humble-ros-base
 sudo apt install ros-dev-tools
+
+# 安装demos
+sudo apt install ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py
+
+source /opt/ros/humble/setup.bash
+ros2 run demo_nodes_cpp talker
+
+source /opt/ros/humble/setup.bash
+ros2 run demo_nodes_py listener
 ```
