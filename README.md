@@ -226,7 +226,23 @@ sudo docker run --platform linux/arm/v6 --network=host -it --rm -v $(pwd):/works
 
 ```
 
+# 将树莓派作为服务器（共享目录），在 Ubuntu 上挂载
+```bash
+# 在树莓派上
+sudo apt install nfs-kernel-server
+sudo nano /etc/exports
+/home/pi 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+sudo exportfs -ra
+sudo systemctl restart nfs-kernel-server
 
+# 在Ubuntu上
+sudo apt install nfs-common
+mkdir ~/pi_nfs
+sudo mount 192.168.1.84:/home/pi/diff_car_ctrl ~/pi_nfs
+```
+
+
+# ---------------------------------------------------------------------------
 # zero 2w配置网络
 ```bash
 sudo nano /etc/netplan/50-cloud-init.yaml
