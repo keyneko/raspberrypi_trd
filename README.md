@@ -164,8 +164,11 @@ sudo mount 192.168.1.84:/home/pi/diff_car_ctrl ~/pi_nfs
 ```bash
 sudo apt install python3-venv
 python3 -m venv .venv
+python3 -m venv .venv --system-site-packages # 创建包含系统包的虚拟环境
+
 source .venv/bin/activate
 sudo chown -R $USER:$USER .venv  # 确保用户有权访问
+
 pip install opencv-python numpy RPi.GPIO
 pip freeze > requirements.txt
 pip install -r requirements.txt
