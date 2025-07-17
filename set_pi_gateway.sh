@@ -11,5 +11,6 @@ echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf >/dev/null
 
 echo "[✔] 已设置网关为 $GATEWAY_IP，DNS 为 8.8.8.8"
 
-echo "尝试 ping -c 4 google.com..."
+echo "测试网络连接..."
+ping -c 4 8.8.8.8
 ping -c 4 google.com

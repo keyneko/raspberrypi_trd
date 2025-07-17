@@ -219,35 +219,13 @@ ifconfig usb0
 # 让树莓派 Zero 通过主机共享上网
 # Ubuntu 主机侧
 ```bash
-# 启用 IP 转发
-sudo sysctl -w net.ipv4.ip_forward=1
-echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
-
-# 设置 NAT 转发规则（使用 iptables）
-# 假设主机连互联网的接口是 ens33
-sudo iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE
-
-# 允许数据从 Zero 设备发出
-sudo iptables -A FORWARD -i enx7aa417f740e8 -o ens33 -j ACCEPT
-sudo iptables -A FORWARD -i ens33 -o enx7aa417f740e8 -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-# 可选：iptables 规则持久化
-sudo apt install iptables-persistent
-sudo netfilter-persistent save
-
+chmod +x detect_usb_gadget.sh
+chmod +x share_to_pi.sh
+./share_to_pi.sh
 ```
 
 # zero侧
 ```bash
-# 配置 Zero 上的默认网关和 DNS
-# 设置默认网关为主机 IP
-sudo ip route add default via 192.168.7.1
-
-# 设置 DNS（临时）
-echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-
-# 测试网络连接
-ping -c 4 8.8.8.8
-ping -c 4 google.com
-
+chmod +x set_pi_gateway.sh
+./set_pi_gateway.sh
 ```
