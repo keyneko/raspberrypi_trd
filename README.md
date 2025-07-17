@@ -173,3 +173,81 @@ pip install opencv-python numpy RPi.GPIO
 pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
+
+# 为树莓派Zero设置USB网络通讯(Ethernet Gadget)  
+```bash
+sudo nano /boot/firmware/config.txt
+在最后添加
+dtoverlay=dwc2
+
+sudo nano /boot/firmware/cmdline.txt
+在 rootwait 后添加
+modules-load=dwc2,g_ether
+
+# 重启后会创建 usb0 虚拟网卡
+
+# 创建 usb0 网络配置
+# sudo nano /etc/network/interfaces.d/usb0
+# 添加
+# allow-hotplug usb0
+# iface usb0 inet dhcp
+
+# 新版树莓派系统是基于 Raspbian Bookworm（Debian 12），
+# 默认采用了 systemd-networkd 网络管理方案，因此不再使用 /etc/network/interfaces 或 dhcpcd.conf
+
+sudo nano /etc/systemd/network/usb0.network
+添加以下内容
+[Match]
+Name=usb0
+
+[Network]
+Address=192.168.7.2/24
+
+sudo systemctl enable systemd-networkd
+sudo systemctl start systemd-networkd
+
+# 确认配置
+networkctl status usb0
+ip addr show usb0
+
+# 重启并验证
+sudo reboot
+ifconfig usb0
+
+```
+
+# 让树莓派 Zero 通过主机共享上网
+# Ubuntu 主机侧
+```bash
+# 启用 IP 转发
+sudo sysctl -w net.ipv4.ip_forward=1
+echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+
+# 设置 NAT 转发规则（使用 iptables）
+# 假设主机连互联网的接口是 ens33
+sudo iptables -t nat -A POSTROUTING -o ens33 -j MASQUERADE
+
+# 允许数据从 Zero 设备发出
+sudo iptables -A FORWARD -i enx7aa417f740e8 -o ens33 -j ACCEPT
+sudo iptables -A FORWARD -i ens33 -o enx7aa417f740e8 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# 可选：iptables 规则持久化
+sudo apt install iptables-persistent
+sudo netfilter-persistent save
+
+```
+
+# zero侧
+```bash
+# 配置 Zero 上的默认网关和 DNS
+# 设置默认网关为主机 IP
+sudo ip route add default via 192.168.7.1
+
+# 设置 DNS（临时）
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+
+# 测试网络连接
+ping -c 4 8.8.8.8
+ping -c 4 google.com
+
+```
