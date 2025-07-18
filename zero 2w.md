@@ -116,3 +116,54 @@ def main(args=None):
 if __name__ == '__main__':
     main()
 ```
+
+
+# 安装 micro-ROS 到树莓派 Zero 2 W（Linux）
+```bash
+# # 设置 ROS 2 的 sources.list
+# sudo apt update
+# sudo apt install curl gnupg lsb-release
+# sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+# echo "deb [signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | \
+#   sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+# sudo apt update
+
+
+mkdir -p ~/microros_ws/src
+cd ~/microros_ws
+git clone -b humble https://github.com/micro-ROS/micro_ros_setup src/micro_ros_setup
+rosdep update
+rosdep install --from-path src --ignore-src -y
+colcon build
+source install/local_setup.bash
+
+# 克隆示例节点
+cd src
+git clone -b humble https://github.com/micro-ROS/micro-ROS-demos.git
+
+# 主要组件
+git clone -b humble https://github.com/ros2/rclc.git
+git clone -b humble https://github.com/micro-ROS/rmw-microxrcedds.git
+git clone https://github.com/eProsima/Micro-XRCE-DDS-Client.git microxrcedds_client
+git clone https://github.com/eProsima/Micro-CDR.git microcdr
+git clone -b humble https://github.com/micro-ROS/micro_ros_demos.git
+git clone -b humble https://github.com/micro-ROS/rosidl_typesupport_microxrcedds.git
+git clone -b humble https://github.com/micro-ROS/micro_ros_utilities.git
+
+# 安装缺失依赖包
+sudo apt install ros-humble-test-msgs
+sudo apt install ros-humble-osrf-testing-tools-cpp
+sudo apt install ros-humble-rosidl-default-generators \
+                 ros-humble-rosidl-default-runtime \
+                 ros-humble-example-interfaces \
+                 ros-humble-test-msgs
+
+# 编译
+cd ~/microros_ws
+rosdep install --from-paths src --ignore-src -y
+# 清理
+rm -rf build/ install/ log/
+colcon build --symlink-install
+source install/setup.bash
+```
+
