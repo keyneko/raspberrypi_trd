@@ -145,19 +145,34 @@ sudo docker run --platform linux/arm/v6 --network=host -it --rm -v $(pwd):/works
 
 ```
 
-# 将树莓派作为服务器（共享目录），在 Ubuntu 上挂载
+# 通过nfs服务共享目录
 ```bash
-# 在树莓派上
+# 安装 NFS 服务端
+sudo apt update
 sudo apt install nfs-kernel-server
+
+# 创建共享目录
+mkdir -p /home/zx/Documents/raspberrypi/zero2w
+chmod 777 /home/zx/Documents/raspberrypi/zero2w
+
+# 添加共享规则
 sudo nano /etc/exports
-/home/pi 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+/home/zx/Documents/raspberrypi/zero2w 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+
+# 启动并重新导出配置
 sudo exportfs -ra
 sudo systemctl restart nfs-kernel-server
 
-# 在Ubuntu上
+```
+```bash
+# 安装 NFS 客户端, zero
+sudo apt update
 sudo apt install nfs-common
-mkdir ~/pi_nfs
-sudo mount 192.168.1.84:/home/pi/diff_car_ctrl ~/pi_nfs
+
+sudo mkdir -p /mnt/shared
+sudo mount 192.168.1.145:/home/zx/Documents/raspberrypi/zero2w /mnt/shared
+ls /mnt/shared
+
 ```
 
 # 使用venv虚拟环境
