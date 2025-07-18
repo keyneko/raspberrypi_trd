@@ -165,5 +165,29 @@ rosdep install --from-paths src --ignore-src -y
 rm -rf build/ install/ log/
 colcon build --symlink-install
 source install/setup.bash
+
+
+# 运行 ping_pong demo（micro-ROS 发布/订阅对）
+ros2 run micro_ros_demos_rclc ping_pong
+```
+
+
+# 上位机从源码构建 micro-ROS Agent
+```bash
+sudo apt install python3-colcon-common-extensions
+mkdir -p ~/microros_agent_ws/src
+cd ~/microros_agent_ws/src
+git clone -b humble https://github.com/micro-ROS/micro-ROS-Agent.git
+cd ..
+rosdep update
+rosdep install --from-paths src --ignore-src -y
+colcon build
+source install/setup.bash
+
+echo "source ~/microros_agent_ws/install/setup.bash" >> ~/.bashrc
+
+# 运行 micro-ROS Agent
+ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
+
 ```
 
